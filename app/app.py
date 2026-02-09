@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
+from pathlib import Path
 
 st.set_page_config(page_title="Heart Disease Screening (SCR)", layout="centered")
 
@@ -10,10 +11,13 @@ st.write(
     "Not medical advice."
 )
 
+
+
 @st.cache_resource
 def load_model():
-    return joblib.load("artifacts/model_scr.joblib")
-
+    repo_root = Path(__file__).resolve().parents[1]   # sube de app/ a la raíz del repo
+    model_path = repo_root / "artifacts" / "model_scr.joblib"
+    return joblib.load(model_path)
 model = load_model()
 
 st.subheader("Patient inputs (SCR features)")
