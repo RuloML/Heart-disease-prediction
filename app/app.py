@@ -18,6 +18,19 @@ def load_model():
     repo_root = Path(__file__).resolve().parents[1]   # sube de app/ a la raíz del repo
     model_path = repo_root / "artifacts" / "model_scr.joblib"
     return joblib.load(model_path)
+    artifacts_dir = repo_root / "artifacts"
+    candidate_names = ["model_scr.joblib", "model_scr .joblib"]
+
+    for name in candidate_names:
+        model_path = artifacts_dir / name
+        if model_path.exists():
+            return joblib.load(model_path)
+
+    available_files = ", ".join(sorted(p.name for p in artifacts_dir.glob("*.joblib"))) or "none"
+    raise FileNotFoundError(
+        f"Model file not found in {artifacts_dir}. "
+        f"Expected one of: {candidate_names}. Available: {available_files}"
+    )
 model = load_model()
 
 st.subheader("Patient inputs (SCR features)")
