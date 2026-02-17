@@ -22,6 +22,7 @@ model = load_model()
 
 st.subheader("Patient inputs (SCR features)")
 
+
 # Inputs aligned with SCR features
 age = st.number_input("Age", min_value=1, max_value=120, value=45)
 sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female (0)" if x == 0 else "Male (1)")
