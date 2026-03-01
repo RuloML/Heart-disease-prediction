@@ -15,16 +15,30 @@ st.write(
 
 @st.cache_resource
 def load_model():
-    repo_root = Path(__file__).resolve().parents[1]   # sube de app/ a la raíz del repo
-    model_path = repo_root / "artifacts" / "model_scr.joblib"
-    return joblib.load(model_path)
+    repo_root = Path(__file__).resolve().parents[1]  # sube de app/ a la raíz del repo
     artifacts_dir = repo_root / "artifacts"
-    candidate_names = ["model_scr.joblib", "model_scr .joblib"]
 
+    # nombres válidos (sin espacios)
+    candidate_names = ["model_scr.joblib"]
+
+    # Debug visible (no rompe la app)
+    st.sidebar.markdown("### Debug")
+    st.sidebar.write("repo_root:", str(repo_root))
+    st.sidebar.write("artifacts_dir exists:", artifacts_dir.exists())
+    if artifacts_dir.exists():
+        st.sidebar.write("files in artifacts:", [p.name for p in artifacts_dir.iterdir()])
+
+    # Busca el modelo
     for name in candidate_names:
         model_path = artifacts_dir / name
         if model_path.exists():
+            st.sidebar.success(f"Model found: {model_path}")
             return joblib.load(model_path)
+
+    # Si no lo encuentra, falla con mensaje claro
+    raise FileNotFoundError(
+        f"Model not found. Expected one of {candidate_names} inside {artifacts_dir}"
+    )
 
     available_files = ", ".join(sorted(p.name for p in artifacts_dir.glob("*.joblib"))) or "none"
     raise FileNotFoundError(
